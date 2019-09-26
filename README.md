@@ -1,1 +1,1 @@
-# campusbadge
+# CampusBadge
