@@ -187,7 +187,6 @@ Badge.badge = () => {
       .toISOString()
       .split("T")[1]
       .substr(0, 5);
-    if (E.getAnalogVRef() < 3.25) timeStr += " LOW BATTERY";
     g.drawString(timeStr, 0, 59);
     // now write to the screen
     g.flip();
