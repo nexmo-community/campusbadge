@@ -541,6 +541,27 @@ Badge.apps["Flappy Bird"] = () => {
   gameStart();
   setWatch(Badge.menu, BTN1);
 };
+Badge.apps["Sounds"] = () => {
+  var menu = {
+    "": { title: "-- Sounds Menu --" },
+    "Fanfare": fanfare,
+    "Back to Badge": Badge.badge
+  };
+  Pixl.menu(menu);
+};
+fanfare = () =>{
+    pitches = { 'd':293.66, 'A':440.00, };
+    fanfare_notes = "d d d A   d A ";
+    pos = 0;
+    setInterval(() => {
+        var ch = fanfare_notes[pos];
+        if (ch !== undefined) pos++;
+        if (ch in pitches) {
+            analogWrite(A2, 0.8, { soft: true, freq: pitches[ch] } );
+        }
+        else digitalWrite(A2,0); //off
+    }, 100);
+};
 
 
 
