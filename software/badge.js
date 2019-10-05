@@ -208,19 +208,17 @@ Badge.badge = () => {
 Badge.apps["Backlight"] = () => {
   var menu = {
     "": { title: "-- Select Backlight --" },
+    "On": backlightOn,
+    "Off": backlightOff,
     "Back to Badge": Badge.badge
   };
-  function bl(i) {
-    return function() {
-      Badge.defaultPattern = i;
-      Badge.pattern(Badge.defaultPattern);
-    };
-  }
-  menu.off = bl();
-  for (var i in Badge.patterns) menu[i] = bl(i);
-  Badge.defaultPattern = undefined;
-  Badge.reset();
   Pixl.menu(menu);
+};
+backlightOn=()=>{
+  digitalWrite(LED,1), LED.write(1);
+};
+backlightOff=()=>{
+  digitalWrite(LED,0), LED.write(0);
 };
 Badge.apps["T-Rex"] = () => {
   Badge.reset();
