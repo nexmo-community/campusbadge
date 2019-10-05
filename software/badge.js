@@ -505,7 +505,6 @@ Badge.apps["Flappy Bird"] = () => {
     }
 
     if (buttonState && !wasPressed) {
-      digitalPulse(VIBL, 1, 20);
       birdvy -= 2;
     }
     wasPressed = buttonState;
