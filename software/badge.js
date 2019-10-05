@@ -539,6 +539,41 @@ Badge.apps["Flappy Bird"] = () => {
   setWatch(Badge.menu, BTN1);
 };
 
+Badge.apps["Sounds"] = () => {
+  var menu = {
+    "": { title: "-- Sounds Menu --" },
+    "Fanfare": fanfare,
+    "Back to Badge": Badge.badge
+  };
+  Pixl.menu(menu);
+};
+
+function playNextNote(pos) {
+    pitches = { 'd':293.66, 'A':440.00, };
+    fanfare_notes = "d d d A   d A ";
+    var ch = fanfare_notes[pos];
+    if (ch !== undefined) {
+        pos++;
+        if (ch in pitches) {
+            analogWrite(A2, 0.8, { soft: true, freq: pitches[ch] } );
+        }
+        else digitalWrite(A2,0); //off
+        setTimeout(()=>{playNextNote(pos);}, 100);
+    } else {
+        digitalWrite(A2,0); //off
+        fanfarePlaying = false;
+    }
+}
+
+var fanfarePlaying = false;
+
+fanfare = () =>{
+    if (!fanfarePlaying) {
+        fanfarePlaying = true;
+        playNextNote(0);
+    }
+};
+
 
 
 // --------------------------------------------
