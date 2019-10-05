@@ -25,7 +25,7 @@ If you look at the sides of the screen you will find four (small) buttons. These
 * **BTN3** in the bottom right
 * **BTN4** in the bottom left
 
-The left hand side controls the menu (BTN1 and BTN4 to go up and down respectively), and BTN4 in the bottom right selects.
+The left hand side controls the menu (BTN1 and BTN4 to go up and down respectively), and BTN3 in the bottom right selects.
 
 ## Configuring Your Name
 
