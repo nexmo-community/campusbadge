@@ -1,10 +1,30 @@
 Badge = global.Badge || {};
 Badge.URL = Badge.URL || "http://www.espruino.com";
 Badge.NAME = Badge.NAME || ["Your", "Name Here"]; // ISO10646-1 codepage
+Badge.WIFI_SSID = Badge.WIFI_SSID || "SSID";
+Badge.WIFI_PW = Badge.WIFI_PW || "Password";
 
 // User-defined apps
 Badge.apps = Badge.apps || {};
 Badge.patterns = Badge.patterns || {};
+
+var _npwrite = require("neopixel").write;
+require("neopixel").write = function(p,d) {
+  var n = 0;
+  // search for watches on D22
+  for (var i=0;i<8;i++)
+    if (((peek32(0x40006510+i*4)>>8)&31)==22)
+      n = 0x40006510+i*4;
+  // if there was one, disable it
+  if (n) poke32(n, peek32(n)&~3);
+  // do neopixel write
+  _npwrite(p,d);
+  // re-enable watch
+  poke32(0x40025564,0xFFFFFFFF);
+  poke32(0x50000758,12);
+  if (n) poke32(n, peek32(n)|1);
+};
+
 
 var BTNS = [BTN1, BTN2, BTN3, BTN4];
 // --------------------------------------------
@@ -60,19 +80,12 @@ Badge.drawCenter = (txt, title, big) => {
 Badge.alert = s => {
   Badge.reset();
   Badge.drawCenter(s, "Alert!", true /*big*/);
-  Badge.pattern("red");
   BTNS.forEach(p => setWatch(Badge.badge, p));
-  function bzzt() {
-    digitalPulse(VIBL, 1, 100);
-    digitalPulse(VIBR, 0, [120, 100]);
-  }
-  bzzt();
   setInterval(bzzt, 10000);
 };
 Badge.info = s => {
   Badge.reset();
   Badge.drawCenter(s, "Information", true /*big*/);
-  Badge.pattern("info");
   BTNS.forEach(p => setWatch(Badge.badge, p));
 };
 // https://raw.githubusercontent.com/Tecate/bitmap-fonts/master/bitmap/dylex/7x13.bdf
