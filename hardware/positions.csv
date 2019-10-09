@@ -1,0 +1,14 @@
+### Module positions - created on Wednesday, 09 October 2019 at 15:24:48 ###
+### Printed by Pcbnew version pcbnew (5.1.2-1)-1
+## Unit = mm, Angle = deg.
+## Side : top
+# Ref     Val                                Package                                 PosX       PosY       Rot  Side
+C1                                           C_1206_3216Metric                   193.5480  -110.5916    0.0000  top
+D1        D1                                 D_1206_3216Metric                   183.1340  -101.7016    0.0000  top
+LED       LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm  LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm   208.0260   -59.9440    0.0000  top
+LED       LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm  LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm   170.4340   -59.9440    0.0000  top
+LED       LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm  LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm   198.6280   -59.9440    0.0000  top
+LED       LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm  LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm   189.2300   -59.9440    0.0000  top
+LED       LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm  LED_SK6812_PLCC4_5.0x5.0mm_P3.2mm   180.0860   -59.9440    0.0000  top
+REG2      SOT-223                            SOT-223                             202.6920  -108.3056    0.0000  top
+## End
