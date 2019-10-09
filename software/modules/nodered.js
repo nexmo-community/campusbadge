@@ -2,17 +2,25 @@ module.exports.run = function () {
   Badge.reset();
   var server = "test.mosquitto.org"; 
   var mqtt = require("tinyMQTT").create(server);
+  var name = Badge.getName();
   mqtt.on('connected', function() {
-      var name = Badge.getName();
       Badge.drawCenter("MQTT Connected\n"+name);
-      mqtt.subscribe("/badge/"+name);
+      mqtt.subscribe("/badge/"+name+"/lights");
+      mqtt.subscribe("/badge/"+name+"/text");
+      //mqtt.subscribe("/badge/"+name+"/sound");
     
   });
   mqtt.on('message', function (msg) {
-    //console.log(msg.message);
-    //console.log(msg.topic);
-    var data = JSON.parse(msg.message);
-    require("neopixel").write(D13, data);
+    switch (msg.topic) {
+    case "/badge/"+name+"/lights":
+      var data = JSON.parse(msg.message);
+      require("neopixel").write(D13, data);
+      break;
+    case "/badge/"+name+"/text":
+      Badge.drawCenter(msg.message);
+      break;
+    }
+    
   });
 
 
@@ -27,5 +35,19 @@ module.exports.run = function () {
       mqtt.connect();
     });
   });
+
+  setWatch(function() {
+    Badge.badge();
+  }, BTN1, {edge:"rising", debounce:50, repeat:true});
+  setWatch(function() {
+    mqtt.publish("/badge/"+name+"/button", "BTN2");
+  }, BTN2, {edge:"rising", debounce:50, repeat:true});
+  setWatch(function() {
+    mqtt.publish("/badge/"+name+"/button", "BTN3");
+  }, BTN3, {edge:"rising", debounce:50, repeat:true});
+  setWatch(function() {
+    mqtt.publish("/badge/"+name+"/button", "BTN4");
+  }, BTN4, {edge:"rising", debounce:50, repeat:true});
+
 };
   

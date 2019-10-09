@@ -249,6 +249,11 @@ Badge.apps["Flappy Bird"] = () => {
     flappybird.run();
 };
 
+Badge.apps["DTMF Dialer"]= () => {
+  var dtmf = require('dtmf');
+  dtmf.run();
+};
+
 Badge.apps["NodeRED Workshop"]= () => {
   var nodered = require('nodered');
   nodered.run();
