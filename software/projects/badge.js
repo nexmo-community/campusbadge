@@ -238,6 +238,15 @@ function onInit() {
 
 // Additional Apps Here--------------------------------
 
+Badge.apps["Lights"]= () => {
+  var lights = require('lights');
+  lights.run();
+};
+
+Badge.apps["Sounds"]= () => {
+  var sounds = require('sounds');
+  sounds.run();
+};
 
 Badge.apps["T-Rex"] = () => {
   var trex = require('t-rex');
@@ -259,7 +268,3 @@ Badge.apps["NodeRED Workshop"]= () => {
   nodered.run();
 };
 
-Badge.apps["Lights"]= () => {
-  var lights = require('lights');
-  lights.run();
-};
