@@ -249,5 +249,9 @@ Badge.apps["Flappy Bird"] = () => {
     flappybird.run();
 };
 
+Badge.apps["NodeRED Workshop"]= () => {
+  var nodered = require('nodered');
+  nodered.run();
+};
 
 
