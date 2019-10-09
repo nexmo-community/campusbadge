@@ -66,8 +66,8 @@
                             Puck.write(command);
                         }
                         function setWifi() {
-                            var first = document.getElementById('ssid').value;
-                            var second = document.getElementById('password').value;
+                            var ssid = document.getElementById('ssid').value;
+                            var password = document.getElementById('password').value;
 
                             var command =
                                 "require(\"Storage\").write(\".boot2\", `Badge=global.Badge||{}; Badge.WIFI_SSID=\""+ssid+"\"; Badge.WIFI_PW=\""+password+"\"`);\n"
