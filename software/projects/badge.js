@@ -259,4 +259,7 @@ Badge.apps["NodeRED Workshop"]= () => {
   nodered.run();
 };
 
-
+Badge.apps["Lights"]= () => {
+  var lights = require('lights');
+  nodered.run();
+};
