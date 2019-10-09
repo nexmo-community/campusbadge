@@ -482,4 +482,324 @@ Badge.apps["NodeRED Workshop"]= () => {
   }, BTN4, {edge:"rising", debounce:50, repeat:true});
 };
 
+Badge.apps["T-Rex"]=()=>{
+
+  Badge.reset();
+  var IMG = {
+    rex: [
+      Graphics.createImage(`
+           ########
+          ##########
+          ## #######
+          ##########
+          ##########
+          ##########
+          #####
+          ########
+#        #####
+#      #######
+##    ##########
+###  ######### #
+##############
+##############
+ ############
+  ###########
+   #########
+    #######
+     ### ##
+     ##   #
+          #
+          ##
+`),
+      Graphics.createImage(`
+           ########
+          ##########
+          ## #######
+          ##########
+          ##########
+          ##########
+          #####
+          ########
+#        #####
+#      #######
+##    ##########
+###  ######### #
+##############
+##############
+ ############
+  ###########
+   #########
+    #######
+     ### ##
+     ##   ##
+     #
+     ##
+`),
+      Graphics.createImage(`
+           ########
+          #   ######
+          # # ######
+          #   ######
+          ##########
+          ##########
+          #####
+          ########
+#        #####
+#      #######
+##    ##########
+###  ######### #
+##############
+##############
+ ############
+  ###########
+   #########
+    #######
+     ### ##
+     ##   #
+     #    #
+     ##   ##
+`)
+    ],
+    cacti: [
+      Graphics.createImage(`
+     ##
+    ####
+    ####
+    ####
+    ####
+    ####  #
+ #  #### ###
+### #### ###
+### #### ###
+### #### ###
+### #### ###
+### #### ###
+### #### ###
+### #### ###
+###########
+ #########
+    ####
+    ####
+    ####
+    ####
+    ####
+    ####
+    ####
+    ####
+`),
+      Graphics.createImage(`
+   ##
+   ##
+ # ##
+## ##  #
+## ##  #
+## ##  #
+## ##  #
+#####  #
+ ####  #
+   #####
+   ####
+   ##
+   ##
+   ##
+   ##
+   ##
+   ##
+   ##
+`)
+    ]
+  };
+  IMG.rex.forEach(i => (i.transparent = 0));
+  IMG.cacti.forEach(i => (i.transparent = 0));
+  var cacti, rex, frame;
+
+  function gameStart() {
+    rex = {
+      alive: true,
+      img: 0,
+      x: 10,
+      y: 0,
+      vy: 0,
+      score: 0
+    };
+    cacti = [{ x: 128, img: 1 }];
+    var random = new Uint8Array((128 * 3) / 8);
+    for (var i = 0; i < 50; i++) {
+      var a = 0 | (Math.random() * random.length);
+      var b = 0 | (Math.random() * 8);
+      random[a] |= 1 << b;
+    }
+    IMG.ground = { width: 128, height: 3, bpp: 1, buffer: random.buffer };
+    frame = 0;
+    setInterval(onFrame, 50);
+  }
+  function gameStop() {
+    //digitalPulse(VIBL, 1, 1000);
+    //digitalPulse(VIBR, 1, 1000);
+    rex.alive = false;
+    rex.img = 2; // dead
+    clearInterval();
+    setTimeout(() => setWatch(gameStart, BTN3), 1000);
+    setTimeout(onFrame, 10);
+  }
+
+  function onFrame() {
+    g.clear();
+    if (rex.alive) {
+      frame++;
+      rex.score++;
+      if (!(frame & 3)) rex.img = rex.img ? 0 : 1;
+      // move rex
+      if (BTN4.read() && rex.x > 0) rex.x--;
+      if (BTN3.read() && rex.x < 20) rex.x++;
+      if (BTN2.read() && rex.y == 0) {
+        //digitalPulse(VIBL, 1, 20);
+        rex.vy = 4;
+      }
+      rex.y += rex.vy;
+      rex.vy -= 0.2;
+      if (rex.y <= 0) {
+        rex.y = 0;
+        rex.vy = 0;
+      }
+      // move cacti
+      var lastCactix = cacti.length ? cacti[cacti.length - 1].x : 127;
+      if (lastCactix < 128) {
+        cacti.push({
+          x: lastCactix + 24 + Math.random() * 128,
+          img: Math.random() > 0.5 ? 1 : 0
+        });
+      }
+      cacti.forEach(c => c.x--);
+      while (cacti.length && cacti[0].x < 0) cacti.shift();
+    } else {
+      g.drawString("Game Over!", (128 - g.stringWidth("Game Over!")) / 2, 20);
+    }
+    g.drawLine(0, 60, 127, 60);
+    cacti.forEach(c =>
+      g.drawImage(IMG.cacti[c.img], c.x, 60 - IMG.cacti[c.img].height)
+    );
+    // check against actual pixels
+    var rexx = rex.x;
+    var rexy = 38 - rex.y;
+    if (
+      rex.alive &&
+      (g.getPixel(rexx + 0, rexy + 13) ||
+        g.getPixel(rexx + 2, rexy + 15) ||
+        g.getPixel(rexx + 5, rexy + 19) ||
+        g.getPixel(rexx + 10, rexy + 19) ||
+        g.getPixel(rexx + 12, rexy + 15) ||
+        g.getPixel(rexx + 13, rexy + 13) ||
+        g.getPixel(rexx + 15, rexy + 11) ||
+        g.getPixel(rexx + 17, rexy + 7) ||
+        g.getPixel(rexx + 19, rexy + 5) ||
+        g.getPixel(rexx + 19, rexy + 1))
+    ) {
+      return gameStop();
+    }
+    g.drawImage(IMG.rex[rex.img], rexx, rexy);
+    var groundOffset = frame & 127;
+    g.drawImage(IMG.ground, -groundOffset, 61);
+    g.drawImage(IMG.ground, 128 - groundOffset, 61);
+    g.drawString(rex.score, 127 - g.stringWidth(rex.score));
+    g.flip();
+  }
+  gameStart();
+  setWatch(Badge.menu, BTN1);
+}
+
+Badge.apps["Flappy Bird"]=()=>{
+  Badge.reset();
+  var SPEED = 0.5;
+  var BIRDIMG = Graphics.createImage(`
+
+ ####
+#    #
+# ### #
+# #  #
+#    #
+ ####
+
+`);
+  BIRDIMG.transparent = 0;
+  var birdy, birdvy;
+  var wasPressed = false;
+  var running = false;
+  var barriers;
+  var score;
+
+  function newBarrier(x) {
+    barriers.push({
+      x1: x - 5,
+      x2: x + 5,
+      y: 10 + Math.random() * (g.getHeight() - 20),
+      gap: 8
+    });
+  }
+
+  function gameStart() {
+    running = true;
+    birdy = g.getHeight() / 2;
+    birdvy = 0;
+    barriers = [];
+    newBarrier(g.getWidth() / 2);
+    newBarrier(g.getWidth());
+    score = 0;
+    wasPressed = false;
+    setInterval(onFrame, 50);
+  }
+
+  function gameStop() {
+    running = false;
+    clearInterval();
+    setTimeout(() => setWatch(gameStart, BTN3), 1000);
+    setTimeout(onFrame, 10);
+  }
+
+  function onFrame() {
+    var buttonState = BTN2.read() || BTN3.read();
+
+    g.clear();
+    if (!running) {
+      g.drawString("Game Over!", 25, 10);
+      g.drawString("Score", 10, 20);
+      g.drawString(score, 10, 26);
+      g.flip();
+      return;
+    }
+
+    if (buttonState && !wasPressed) {
+      birdvy -= 2;
+    }
+    wasPressed = buttonState;
+
+    score++;
+    birdvy += 0.2;
+    birdvy *= 0.8;
+    birdy += birdvy;
+    if (birdy > g.getHeight()) return gameStop();
+    // draw bird
+    g.drawImage(BIRDIMG, 0, birdy - 4);
+    // draw barriers
+    barriers.forEach(b => {
+      b.x1 -= SPEED;
+      b.x2 -= SPEED;
+      var btop = b.y - b.gap;
+      var bbot = b.y + b.gap;
+      g.drawRect(b.x1 + 1, -1, b.x2 - 2, btop - 5);
+      g.drawRect(b.x1, btop - 5, b.x2, btop);
+      g.drawRect(b.x1, bbot, b.x2, bbot + 5);
+      g.drawRect(b.x1 + 1, bbot + 5, b.x2 - 1, g.getHeight());
+      if (b.x1 < 6 && (birdy - 3 < btop || birdy + 3 > bbot)) return gameStop();
+    });
+    while (barriers.length && barriers[0].x2 <= 0) {
+      barriers.shift();
+      newBarrier(g.getWidth());
+    }
+
+    g.flip();
+  }
+  gameStart();
+  setWatch(Badge.menu, BTN1);
+}
 
