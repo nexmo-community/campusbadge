@@ -141,7 +141,7 @@ Badge.menu = () => {
     "Toggle Backlight": () => {
       Badge.backlight = !Badge.backlight; 
       LED1.write(Badge.backlight);
-    }
+    },
     About: () => {
       Badge.drawCenter(`-- Your Badge --
 
