@@ -439,7 +439,7 @@ Badge.apps["NodeRED Workshop"]= () => {
       Badge.drawCenter("MQTT Connected\n"+name);
       mqtt.subscribe("/badge/"+name+"/lights");
       mqtt.subscribe("/badge/"+name+"/text");
-      //mqtt.subscribe("/badge/"+name+"/sound");
+      mqtt.subscribe("/badge/"+name+"/sound");
     
   });
   mqtt.on('message', function (msg) {
@@ -450,6 +450,14 @@ Badge.apps["NodeRED Workshop"]= () => {
       break;
     case "/badge/"+name+"/text":
       Badge.drawCenter(msg.message);
+      break;
+    case "/badge/"+name+"/sound":
+      var data = JSON.parse(msg.message);
+      console.log(data);
+      analogWrite(A1,0.5,{ freq : data.tone });
+      setTimeout(function(){
+        analogWrite(A1,0);
+      }, data.time); 
       break;
     }
     
