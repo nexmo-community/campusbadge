@@ -437,30 +437,23 @@ Badge.apps["NodeRED Workshop"]= () => {
   var name = Badge.getName();
   mqtt.on('connected', function() {
       Badge.drawCenter("MQTT Connected\n"+name);
-      mqtt.subscribe("/badge/"+name+"/lights");
-      mqtt.subscribe("/badge/"+name+"/text");
-      mqtt.subscribe("/badge/"+name+"/sound");
+      mqtt.subscribe("/badge/"+name+"/message");
     
   });
   mqtt.on('message', function (msg) {
-    switch (msg.topic) {
-    case "/badge/"+name+"/lights":
       var data = JSON.parse(msg.message);
-      require("neopixel").write(D13, data);
-      break;
-    case "/badge/"+name+"/text":
-      Badge.drawCenter(msg.message);
-      break;
-    case "/badge/"+name+"/sound":
-      var data = JSON.parse(msg.message);
-      console.log(data);
-      analogWrite(A1,0.5,{ freq : data.tone });
-      setTimeout(function(){
-        analogWrite(A1,0);
-      }, data.time); 
-      break;
-    }
-    
+      if (data.hasOwnProperty('lights')){
+        require("neopixel").write(D13, data.lights);
+      }
+      if (data.hasOwnProperty('text')){
+        Badge.drawCenter(data.text);
+      }
+      if (data.hasOwnProperty('sound')){    
+        analogWrite(A1,0.5,{ freq : data.sound.tone });
+        setTimeout(function(){
+          analogWrite(A1,0);
+        }, data.sound.time); 
+      }
   });
 
 
