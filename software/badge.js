@@ -442,7 +442,6 @@ Badge.apps["NodeRED Workshop"]= () => {
   });
   mqtt.on('publish', function (msg) {
       var data = JSON.parse(msg.message);
-      console.log(msg);
       if (data.hasOwnProperty('lights')){
         require("neopixel").write(D13, data.lights);
       }
