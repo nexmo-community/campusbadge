@@ -433,15 +433,16 @@ Badge.apps["DTMF Dialer"]= () => {
 Badge.apps["NodeRED Workshop"]= () => {
   Badge.reset();
   var server = "test.mosquitto.org"; 
-  var mqtt = require("tinyMQTT").create(server);
+  var mqtt = require("MQTT").create(server);
   var name = Badge.getName();
   mqtt.on('connected', function() {
       Badge.drawCenter("MQTT Connected\n"+name);
       mqtt.subscribe("/badge/"+name+"/message");
     
   });
-  mqtt.on('message', function (msg) {
+  mqtt.on('publish', function (msg) {
       var data = JSON.parse(msg.message);
+      console.log(msg);
       if (data.hasOwnProperty('lights')){
         require("neopixel").write(D13, data.lights);
       }
