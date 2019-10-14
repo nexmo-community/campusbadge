@@ -430,6 +430,32 @@ Badge.apps["DTMF Dialer"]= () => {
 
 };
 
+Badge.apps["Temperature"] = () => {
+  function onTimer() {
+    // Get the temperature as a string
+    var t = E.getTemperature().toFixed(1);
+    // Clear display
+    g.clear();
+    // Use the small font for a title
+    g.setFontBitmap();
+    g.drawString("Temperature:");
+    // Use a large font for the value itself
+    g.setFontVector(40);
+    g.drawString(t, (g.getWidth()-g.stringWidth(t))/2,10);
+    // Update the screen
+    g.flip();
+  }
+  // Update temperature every 2 seconds
+  setInterval(onTimer,2000);
+  // Update temperature immediately
+  onTimer();
+  // Handle exit
+  setWatch(function() {
+    Badge.badge();
+  }, BTN1, {edge:"rising", debounce:50, repeat:true});
+
+};
+
 Badge.apps["NodeRED Workshop"]= () => {
   Badge.reset();
   var server = "test.mosquitto.org"; 
