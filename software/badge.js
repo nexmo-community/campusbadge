@@ -299,6 +299,20 @@ Badge.apps["DTMF Dialer"]= () => {
   	numlen = 0;
   	show();
   }
+  function bluebox(){
+      var np =  require("neopixel");
+      np.write(D13, [60,0,30,50,0,120,0,0,255,120,0,50,30,0,60]);
+      g.clear();
+      g.setFontVector(15);
+      g.drawString("2600",5,20);
+      g.flip();
+      analogWrite(A1,0.5,{ freq : 2600 });
+      setTimeout(function(){analogWrite(A1,0);},1000);
+      setTimeout(function(){analogWrite(A1,0.5,{ freq : 2400 });},1200);
+      setTimeout(function(){analogWrite(A1,0);},1500);
+      setTimeout(function(){np.write(D13, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},1500);
+      setTimeout(function(){reset();},2000);
+    }
   function play(){
      var player = setInterval(function(){ 
        if (number.length == 0) {
@@ -423,9 +437,14 @@ Badge.apps["DTMF Dialer"]= () => {
     step('up');
   }, BTN3, {edge:"rising", debounce:50, repeat:true});
 
-  setWatch(function() {
-    next();
-  }, BTN4, {edge:"rising", debounce:50, repeat:true});
+  setWatch(function(e){
+  var isLong = (e.time-e.lastTime)>3;
+      if (isLong){
+        bluebox();
+      }else{
+        next();
+      }
+    }, BTN4, {repeat:true, debounce:50, edge:"falling"});
   next();
 
 };
