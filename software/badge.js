@@ -257,6 +257,7 @@ Badge.apps["Lights"] = () => {
       l[i] = val;
     }
     lightpattern(l);
+    setTimeout(amb, 1000);
   };
 
   var menu = {
