@@ -239,21 +239,35 @@ function onInit() {
 // Additional Apps Here--------------------------------
 
 Badge.apps["Lights"] = () => {
-    Badge.reset();
-    var menu = {
-      "": { title: "-- Select Pattern --" },
-      "Back to Badge": Badge.badge,
-      "Rainbow": function () {lightpattern([0,127,0,64,127,0,127,0,0,0,0,127,0,96,127]);},
-      "One White" : function () { lightpattern([0,0,0,0,0,0,127,127,127,0,0,0,0,0,0]);},
-      "Off" : function () { lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
-    };
-    Pixl.menu(menu);
-  }; 
- 
+  Badge.reset();
 
-  lightpattern=(pattern)=>{
+  lightpattern = (pattern) => {
     var np = require("neopixel");
     np.write(D13, pattern);
+  };
+
+  function amb() {
+    l = new Int8Array(15);
+    for( i = 0; i < 15; i++) {
+      if(Math.random() > 0.6) {
+        val = Math.random() * 80;
+      } else {
+        val = Math.random() * 35;
+      }
+      l[i] = val;
+    }
+    lightpattern(l);
+  };
+
+  var menu = {
+    "": { title: "-- Select Pattern --" },
+    "Back to Badge": Badge.badge,
+    "Rainbow": function () {lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
+    "Ambient/Random": amb,
+    "Floodlights (health warning)" : function () { lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
+    "Off" : function () { lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
+  };
+  Pixl.menu(menu);
 };
 
 Badge.apps["DTMF Dialer"]= () => {
