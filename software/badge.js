@@ -271,6 +271,79 @@ Badge.apps["Lights"] = () => {
   Pixl.menu(menu);
 };
 
+Badge.apps["Sound"]= () => {
+  Badge.reset()
+
+  var SPK1=A0;
+  var SPK2=A1;
+  var SPK3=A2;
+
+  var soundInProgress = false;
+  var timer;
+
+  var pitches = {
+    'd':293.66,
+    'A':440.00,
+  };
+
+  var fanfare_notes = [
+    ["d", 200],
+    ["d", 200],
+    ["d", 200],
+    ["A", 400],
+    ["d", 200],
+    ["A", 400]
+  ];
+
+  function playNextNoteWithDuration(tune, pos) {
+    if (tune[pos]) {
+      var ch = tune[pos][0];
+      var duration = tune[pos][1];
+      pos++;
+      if (ch in pitches) {
+        analogWrite(SPK1, 0.8, { soft: true, freq: pitches[ch] } );
+      }
+      else digitalWrite(SPK1,0); //off
+      setTimeout(playNextNoteWithDuration, duration, tune, pos);
+    } else {
+      digitalWrite(SPK1,0); //off
+      soundInProgress = false;
+    }
+  }
+
+  function fanfare() {
+    if (!soundInProgress) {
+      soundInProgress = true;
+      playNextNoteWithDuration(fanfare_notes, 0);
+    }
+  }
+
+  function silence() {
+    digitalWrite(SPK1, 0);
+    if (timer) {
+      clearTimeout(timer);
+    }
+    soundInProgress = false;
+  }
+
+  function beep() {
+    if(!soundInProgress) {
+      soundInProgress=true;
+      analogWrite(SPK1, 0.5, { freq: 1000} );
+      setTimeout(silence, 300);
+    }
+  };
+
+  var menu = {
+    "": { title: "-- Sounds Menu --" },
+    "Back to Badge": Badge.badge,
+    "Beep" : beep,
+    "Fanfare" : fanfare,
+    "Stop" : silence,
+  };
+  Pixl.menu(menu);
+};
+
 Badge.apps["DTMF Dialer"]= () => {
    Badge.reset();
 
