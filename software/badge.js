@@ -8,6 +8,7 @@ Badge.backlight = false;
 Badge.apps = Badge.apps || {};
 Badge.patterns = Badge.patterns || {};
 
+
 //Patch for neopixel lib on pixl
 var _npwrite = require("neopixel").write;
 require("neopixel").write = function(p,d) {
@@ -26,6 +27,7 @@ require("neopixel").write = function(p,d) {
   if (n) poke32(n, peek32(n)|1);
 };
 
+var np =  require("neopixel");
 
 var BTNS = [BTN1, BTN2, BTN3, BTN4];
 // --------------------------------------------
@@ -136,19 +138,11 @@ Badge.menu = () => {
     m = { move: cb, select: cb };
   }
   var mainmenu = {
-    "": { title: "-- Your badge --" },
+    "": { title: "-- Campus Badge --" },
     "Back to Badge": Badge.badge,
     "Toggle Backlight": () => {
       Badge.backlight = !Badge.backlight; 
       LED1.write(Badge.backlight);
-    },
-    About: () => {
-      Badge.drawCenter(`-- Your Badge --
-
-with Espruino Pixl.js
-www.espruino.com
-`);
-      wait(e => Badge.menu());
     },
     "Make Connectable": () => {
       Badge.drawCenter(`-- Now Connectable --
@@ -199,20 +193,20 @@ Badge.badge = () => {
     );
 
     // Draw the current time
-    g.setFontAlign(-1, -1);
-    var date = new Date();
-    var timeStr = date
-      .toISOString()
-      .split("T")[1]
-      .substr(0, 5);
-    g.drawString(timeStr, 0, 59);
+    //g.setFontAlign(-1, -1);
+    //var date = new Date();
+    //var timeStr = date
+    //  .toISOString()
+    //  .split("T")[1]
+    //  .substr(0, 5);
+    //g.drawString(timeStr, 0, 59);
     g.flip();
-    var delay = 1000;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(e => {
-      timeout = undefined;
-      draw(1);
-    }, delay);
+    //var delay = 1000;
+    //if (timeout) clearTimeout(timeout);
+    //timeout = setTimeout(e => {
+    //  timeout = undefined;
+    //  draw(1);
+    //}, delay);
   }
   draw(0);
   setWatch(Badge.menu, BTN1);
@@ -240,9 +234,7 @@ function onInit() {
 
 Badge.apps["Lights"] = () => {
   Badge.reset();
-
   lightpattern = (pattern) => {
-    var np = require("neopixel");
     np.write(D13, pattern);
   };
 
@@ -458,7 +450,6 @@ Badge.apps["DTMF Dialer"]= () => {
   	show();
   }
   function bluebox(){
-      var np =  require("neopixel");
       np.write(D13, [60,0,30,50,0,120,0,0,255,120,0,50,30,0,60]);
       g.clear();
       g.setFontVector(15);
@@ -636,26 +627,26 @@ Badge.apps["Temperature"] = () => {
 Badge.apps["NodeRED Workshop"]= () => {
   Badge.reset();
   var server = "test.mosquitto.org"; 
-  var mqtt = require("MQTT").create(server);
+  var mqtt = require("tinyMQTT").create(server);
   var name = Badge.getName();
   mqtt.on('connected', function() {
       Badge.drawCenter("MQTT Connected\n"+name);
       mqtt.subscribe("/badge/"+name+"/message");
     
   });
-  mqtt.on('publish', function (msg) {
+  mqtt.on('message', function (msg) {
       var data = JSON.parse(msg.message);
-      if (data.hasOwnProperty('lights')){
-        require("neopixel").write(D13, data.lights);
+      if (data.hasOwnProperty('l')){
+        np.write(D13, data.l);
       }
-      if (data.hasOwnProperty('text')){
-        Badge.drawCenter(data.text);
+      if (data.hasOwnProperty('t')){
+        Badge.drawCenter(data.t);
       }
-      if (data.hasOwnProperty('sound')){    
-        analogWrite(A1,0.5,{ freq : data.sound.tone });
+      if (data.hasOwnProperty('f')){    
+        analogWrite(A1,0.5,{ freq : data.f });
         setTimeout(function(){
           analogWrite(A1,0);
-        }, data.sound.time); 
+        }, data.d); 
       }
   });
 
@@ -838,8 +829,6 @@ Badge.apps["T-Rex"]=()=>{
     setInterval(onFrame, 50);
   }
   function gameStop() {
-    //digitalPulse(VIBL, 1, 1000);
-    //digitalPulse(VIBR, 1, 1000);
     rex.alive = false;
     rex.img = 2; // dead
     clearInterval();
@@ -857,7 +846,6 @@ Badge.apps["T-Rex"]=()=>{
       if (BTN4.read() && rex.x > 0) rex.x--;
       if (BTN3.read() && rex.x < 20) rex.x++;
       if (BTN2.read() && rex.y == 0) {
-        //digitalPulse(VIBL, 1, 20);
         rex.vy = 4;
       }
       rex.y += rex.vy;
