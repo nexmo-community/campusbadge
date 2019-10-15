@@ -50,8 +50,8 @@ We've put together some ready-made bits and bobs for you to enjoy in between let
 * [Backlight](https://github.com/nexmo-community/campusbadge/wiki/Backlight)
 * [Lights](https://github.com/nexmo-community/campusbadge/wiki/Lights)
 * [Sound](https://github.com/nexmo-community/campusbadge/wiki/Sound)
-* [DTMF Dialer](https://github.com/nexmo-community/campusbadge/wiki/DTMF Dialer)
-* [T-Rex](https://github.com/nexmo-community/campusbadge/wiki/T-Rex
+* [DTMF Dialer](https://github.com/nexmo-community/campusbadge/wiki/DTMFDialer)
+* [T-Rex](https://github.com/nexmo-community/campusbadge/wiki/T-Rex)
 * [Flappy Bird](https://github.com/nexmo-community/campusbadge/wiki/FlappyBird)
 
 ## Badge Code
