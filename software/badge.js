@@ -282,8 +282,20 @@ Badge.apps["Sound"]= () => {
   var timer;
 
   var pitches = {
+    'a':220.00,
+    'b':246.94,
+    'c':261.63,
     'd':293.66,
+    'e':329.63,
+    'f':349.23,
+    'g':392.00,
     'A':440.00,
+    'B':493.88,
+    'C':523.25,
+    'D':587.33,
+    'E':659.26,
+    'F':698.46,
+    'G':783.99
   };
 
   var fanfare_notes = [
@@ -295,19 +307,65 @@ Badge.apps["Sound"]= () => {
     ["A", 400]
   ];
 
+  var beethoven_notes = [
+    ["e", "C", 400],
+    ["e", "C", 400],
+    ["f", "D", 400],
+    ["g", "g", 400],
+    ["g", "E", 400],
+    ["f", "D", 400],
+    ["e", "C", 400],
+    ["d", "g", 400],
+    ["c", "e", 400],
+    ["c", "e", 400],
+    ["d", "g", 400],
+    ["e", "C", 400],
+    ["e", "C", 400],
+    [" ", " ", 200],
+    ["d", "g", 200],
+    ["d", "g", 800],
+    ["e", "C", 400],
+    ["e", "C", 400],
+    ["f", "D", 400],
+    ["g", "g", 400],
+    ["g", "E", 400],
+    ["f", "D", 400],
+    ["e", "C", 400],
+    ["d", "g", 400],
+    ["c", "e", 400],
+    ["c", "e", 400],
+    ["d", "g", 400],
+    ["e", "C", 400],
+    ["d", "B", 400],
+    [" ", "g", 200],
+    ["c", "C", 200],
+    ["c", "C", 800],
+  ];
+
   function playNextNoteWithDuration(tune, pos) {
-    if (tune[pos]) {
-      var ch = tune[pos][0];
-      var duration = tune[pos][1];
-      pos++;
-      if (ch in pitches) {
-        analogWrite(SPK1, 0.8, { soft: true, freq: pitches[ch] } );
+    if (tune.length > pos) {
+      var ch1 = tune[pos][0];
+      var ch2; // check for this later
+      var duration = tune[pos][tune[pos].length - 1];
+
+      if (ch1 in pitches) {
+        analogWrite(SPK1, 0.8, { soft: false, freq: pitches[ch1] } );
+        analogWrite(SPK3, 0.8, { soft: false, freq: pitches[ch1] } );
       }
       else digitalWrite(SPK1,0); //off
-      setTimeout(playNextNoteWithDuration, duration, tune, pos);
+
+      if (tune[pos].length > 2) {
+        ch2 = tune[pos][1];
+        if (ch2 in pitches) {
+          analogWrite(SPK2, 0.4, { soft: false, freq: pitches[ch2] } );
+        }
+        else digitalWrite(SPK2,0); //off
+      }
+
+      pos++;
+      timer = setTimeout(playNextNoteWithDuration, duration, tune, pos);
     } else {
-      digitalWrite(SPK1,0); //off
-      soundInProgress = false;
+      silence();
     }
   }
 
@@ -318,8 +376,15 @@ Badge.apps["Sound"]= () => {
     }
   }
 
+  function beethoven() {
+    if (!soundInProgress) {
+      soundInProgress = true;
+      playNextNoteWithDuration(beethoven_notes, 0);
+    }
+  }
+
   function silence() {
-    digitalWrite(SPK1, 0);
+    digitalWrite([SPK1, SPK2, SPK3], 0);
     if (timer) {
       clearTimeout(timer);
     }
@@ -334,11 +399,17 @@ Badge.apps["Sound"]= () => {
     }
   };
 
+  function goBack() {
+    silence();
+    Badge.badge();
+  }
+
   var menu = {
     "": { title: "-- Sounds Menu --" },
-    "Back to Badge": Badge.badge,
+    "Back to Badge": goBack,
     "Beep" : beep,
     "Fanfare" : fanfare,
+    "Beethoven" : beethoven,
     "Stop" : silence,
   };
   Pixl.menu(menu);
