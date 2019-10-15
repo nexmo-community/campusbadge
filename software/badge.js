@@ -80,17 +80,6 @@ Badge.drawCenter = (txt, title, big) => {
   g.setFontAlign(-1, -1);
   g.flip();
 };
-Badge.alert = s => {
-  Badge.reset();
-  Badge.drawCenter(s, "Alert!", true /*big*/);
-  BTNS.forEach(p => setWatch(Badge.badge, p));
-  setInterval(bzzt, 10000);
-};
-Badge.info = s => {
-  Badge.reset();
-  Badge.drawCenter(s, "Information", true /*big*/);
-  BTNS.forEach(p => setWatch(Badge.badge, p));
-};
 // https://raw.githubusercontent.com/Tecate/bitmap-fonts/master/bitmap/dylex/7x13.bdf
 // ISO10646-1 codepage
 Badge.setBigFont = g => {
@@ -457,8 +446,6 @@ Badge.apps["DTMF Dialer"]= () => {
       g.flip();
       analogWrite(A1,0.5,{ freq : 2600 });
       setTimeout(function(){analogWrite(A1,0);},1000);
-      setTimeout(function(){analogWrite(A1,0.5,{ freq : 2400 });},1200);
-      setTimeout(function(){analogWrite(A1,0);},1500);
       setTimeout(function(){np.write(D13, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},1500);
       setTimeout(function(){reset();},2000);
     }
