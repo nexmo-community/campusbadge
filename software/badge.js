@@ -257,16 +257,15 @@ Badge.apps["Lights"] = () => {
       l[i] = val;
     }
     lightpattern(l);
-    setTimeout(amb, 1000);
   };
 
   var menu = {
     "": { title: "-- Select Pattern --" },
     "Back to Badge": Badge.badge,
-    "Rainbow": function () {lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
-    "Ambient/Random": amb,
-    "Floodlights (health warning)" : function () { lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
-    "Off" : function () { lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
+    "Rainbow": function () {clearTimeout(); lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
+    "Ambient/Random": function() { amb(); setInterval(amb, 1000);},
+    "Floodlights (health warning)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
+    "Off" : function () { clearTimeout(); lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
   };
   Pixl.menu(menu);
 };
