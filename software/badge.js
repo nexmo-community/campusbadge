@@ -8,6 +8,7 @@ Badge.backlight = false;
 Badge.apps = Badge.apps || {};
 Badge.patterns = Badge.patterns || {};
 
+
 //Patch for neopixel lib on pixl
 var _npwrite = require("neopixel").write;
 require("neopixel").write = function(p,d) {
@@ -26,6 +27,7 @@ require("neopixel").write = function(p,d) {
   if (n) poke32(n, peek32(n)|1);
 };
 
+var np =  require("neopixel");
 
 var BTNS = [BTN1, BTN2, BTN3, BTN4];
 // --------------------------------------------
@@ -78,17 +80,6 @@ Badge.drawCenter = (txt, title, big) => {
   g.setFontAlign(-1, -1);
   g.flip();
 };
-Badge.alert = s => {
-  Badge.reset();
-  Badge.drawCenter(s, "Alert!", true /*big*/);
-  BTNS.forEach(p => setWatch(Badge.badge, p));
-  setInterval(bzzt, 10000);
-};
-Badge.info = s => {
-  Badge.reset();
-  Badge.drawCenter(s, "Information", true /*big*/);
-  BTNS.forEach(p => setWatch(Badge.badge, p));
-};
 // https://raw.githubusercontent.com/Tecate/bitmap-fonts/master/bitmap/dylex/7x13.bdf
 // ISO10646-1 codepage
 Badge.setBigFont = g => {
@@ -136,19 +127,11 @@ Badge.menu = () => {
     m = { move: cb, select: cb };
   }
   var mainmenu = {
-    "": { title: "-- Your badge --" },
+    "": { title: "-- Campus Badge --" },
     "Back to Badge": Badge.badge,
     "Toggle Backlight": () => {
       Badge.backlight = !Badge.backlight; 
       LED1.write(Badge.backlight);
-    },
-    About: () => {
-      Badge.drawCenter(`-- Your Badge --
-
-with Espruino Pixl.js
-www.espruino.com
-`);
-      wait(e => Badge.menu());
     },
     "Make Connectable": () => {
       Badge.drawCenter(`-- Now Connectable --
@@ -199,20 +182,20 @@ Badge.badge = () => {
     );
 
     // Draw the current time
-    g.setFontAlign(-1, -1);
-    var date = new Date();
-    var timeStr = date
-      .toISOString()
-      .split("T")[1]
-      .substr(0, 5);
-    g.drawString(timeStr, 0, 59);
+    //g.setFontAlign(-1, -1);
+    //var date = new Date();
+    //var timeStr = date
+    //  .toISOString()
+    //  .split("T")[1]
+    //  .substr(0, 5);
+    //g.drawString(timeStr, 0, 59);
     g.flip();
-    var delay = 1000;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(e => {
-      timeout = undefined;
-      draw(1);
-    }, delay);
+    //var delay = 1000;
+    //if (timeout) clearTimeout(timeout);
+    //timeout = setTimeout(e => {
+    //  timeout = undefined;
+    //  draw(1);
+    //}, delay);
   }
   draw(0);
   setWatch(Badge.menu, BTN1);
@@ -239,21 +222,177 @@ function onInit() {
 // Additional Apps Here--------------------------------
 
 Badge.apps["Lights"] = () => {
-    Badge.reset();
-    var menu = {
-      "": { title: "-- Select Pattern --" },
-      "Back to Badge": Badge.badge,
-      "Rainbow": function () {lightpattern([0,127,0,64,127,0,127,0,0,0,0,127,0,96,127]);},
-      "One White" : function () { lightpattern([0,0,0,0,0,0,127,127,127,0,0,0,0,0,0]);},
-      "Off" : function () { lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
-    };
-    Pixl.menu(menu);
-  }; 
- 
-
-  lightpattern=(pattern)=>{
-    var np = require("neopixel");
+  Badge.reset();
+  lightpattern = (pattern) => {
     np.write(D13, pattern);
+  };
+
+  function amb() {
+    l = new Int8Array(15);
+    for( i = 0; i < 15; i++) {
+      if(Math.random() > 0.6) {
+        val = Math.random() * 80;
+      } else {
+        val = Math.random() * 35;
+      }
+      l[i] = val;
+    }
+    lightpattern(l);
+  };
+
+  var menu = {
+    "": { title: "-- Select Pattern --" },
+    "Back to Badge": Badge.badge,
+    "Rainbow": function () {clearTimeout(); lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
+    "Ambient/Random": function() { amb(); setInterval(amb, 1000);},
+    "Floodlights (health warning)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
+    "Off" : function () { clearTimeout(); lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
+  };
+  Pixl.menu(menu);
+};
+
+Badge.apps["Sound"]= () => {
+  Badge.reset()
+
+  var SPK1=A0;
+  var SPK2=A1;
+  var SPK3=A2;
+
+  var soundInProgress = false;
+  var timer;
+
+  var pitches = {
+    'a':220.00,
+    'b':246.94,
+    'c':261.63,
+    'd':293.66,
+    'e':329.63,
+    'f':349.23,
+    'g':392.00,
+    'A':440.00,
+    'B':493.88,
+    'C':523.25,
+    'D':587.33,
+    'E':659.26,
+    'F':698.46,
+    'G':783.99
+  };
+
+  var fanfare_notes = [
+    ["d", 200],
+    ["d", 200],
+    ["d", 200],
+    ["A", 400],
+    ["d", 200],
+    ["A", 400]
+  ];
+
+  var beethoven_notes = [
+    ["e", "C", 400],
+    ["e", "C", 400],
+    ["f", "D", 400],
+    ["g", "g", 400],
+    ["g", "E", 400],
+    ["f", "D", 400],
+    ["e", "C", 400],
+    ["d", "g", 400],
+    ["c", "e", 400],
+    ["c", "e", 400],
+    ["d", "g", 400],
+    ["e", "C", 400],
+    ["e", "C", 400],
+    [" ", " ", 200],
+    ["d", "g", 200],
+    ["d", "g", 800],
+    ["e", "C", 400],
+    ["e", "C", 400],
+    ["f", "D", 400],
+    ["g", "g", 400],
+    ["g", "E", 400],
+    ["f", "D", 400],
+    ["e", "C", 400],
+    ["d", "g", 400],
+    ["c", "e", 400],
+    ["c", "e", 400],
+    ["d", "g", 400],
+    ["e", "C", 400],
+    ["d", "B", 400],
+    [" ", "g", 200],
+    ["c", "C", 200],
+    ["c", "C", 800],
+  ];
+
+  function playNextNoteWithDuration(tune, pos) {
+    if (tune.length > pos) {
+      var ch1 = tune[pos][0];
+      var ch2; // check for this later
+      var duration = tune[pos][tune[pos].length - 1];
+
+      if (ch1 in pitches) {
+        analogWrite(SPK1, 0.8, { soft: false, freq: pitches[ch1] } );
+        analogWrite(SPK3, 0.8, { soft: false, freq: pitches[ch1] } );
+      }
+      else digitalWrite(SPK1,0); //off
+
+      if (tune[pos].length > 2) {
+        ch2 = tune[pos][1];
+        if (ch2 in pitches) {
+          analogWrite(SPK2, 0.4, { soft: false, freq: pitches[ch2] } );
+        }
+        else digitalWrite(SPK2,0); //off
+      }
+
+      pos++;
+      timer = setTimeout(playNextNoteWithDuration, duration, tune, pos);
+    } else {
+      silence();
+    }
+  }
+
+  function fanfare() {
+    if (!soundInProgress) {
+      soundInProgress = true;
+      playNextNoteWithDuration(fanfare_notes, 0);
+    }
+  }
+
+  function beethoven() {
+    if (!soundInProgress) {
+      soundInProgress = true;
+      playNextNoteWithDuration(beethoven_notes, 0);
+    }
+  }
+
+  function silence() {
+    digitalWrite([SPK1, SPK2, SPK3], 0);
+    if (timer) {
+      clearTimeout(timer);
+    }
+    soundInProgress = false;
+  }
+
+  function beep() {
+    if(!soundInProgress) {
+      soundInProgress=true;
+      analogWrite(SPK1, 0.5, { freq: 1000} );
+      setTimeout(silence, 300);
+    }
+  };
+
+  function goBack() {
+    silence();
+    Badge.badge();
+  }
+
+  var menu = {
+    "": { title: "-- Sounds Menu --" },
+    "Back to Badge": goBack,
+    "Beep" : beep,
+    "Fanfare" : fanfare,
+    "Beethoven" : beethoven,
+    "Stop" : silence,
+  };
+  Pixl.menu(menu);
 };
 
 Badge.apps["DTMF Dialer"]= () => {
@@ -300,7 +439,6 @@ Badge.apps["DTMF Dialer"]= () => {
   	show();
   }
   function bluebox(){
-      var np =  require("neopixel");
       np.write(D13, [60,0,30,50,0,120,0,0,255,120,0,50,30,0,60]);
       g.clear();
       g.setFontVector(15);
@@ -308,8 +446,6 @@ Badge.apps["DTMF Dialer"]= () => {
       g.flip();
       analogWrite(A1,0.5,{ freq : 2600 });
       setTimeout(function(){analogWrite(A1,0);},1000);
-      setTimeout(function(){analogWrite(A1,0.5,{ freq : 2400 });},1200);
-      setTimeout(function(){analogWrite(A1,0);},1500);
       setTimeout(function(){np.write(D13, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},1500);
       setTimeout(function(){reset();},2000);
     }
@@ -478,26 +614,26 @@ Badge.apps["Temperature"] = () => {
 Badge.apps["NodeRED Workshop"]= () => {
   Badge.reset();
   var server = "test.mosquitto.org"; 
-  var mqtt = require("MQTT").create(server);
+  var mqtt = require("tinyMQTT").create(server);
   var name = Badge.getName();
   mqtt.on('connected', function() {
       Badge.drawCenter("MQTT Connected\n"+name);
       mqtt.subscribe("/badge/"+name+"/message");
     
   });
-  mqtt.on('publish', function (msg) {
+  mqtt.on('message', function (msg) {
       var data = JSON.parse(msg.message);
-      if (data.hasOwnProperty('lights')){
-        require("neopixel").write(D13, data.lights);
+      if (data.hasOwnProperty('l')){
+        np.write(D13, data.l);
       }
-      if (data.hasOwnProperty('text')){
-        Badge.drawCenter(data.text);
+      if (data.hasOwnProperty('t')){
+        Badge.drawCenter(data.t);
       }
-      if (data.hasOwnProperty('sound')){    
-        analogWrite(A1,0.5,{ freq : data.sound.tone });
+      if (data.hasOwnProperty('f')){    
+        analogWrite(A1,0.5,{ freq : data.f });
         setTimeout(function(){
           analogWrite(A1,0);
-        }, data.sound.time); 
+        }, data.d); 
       }
   });
 
@@ -680,8 +816,6 @@ Badge.apps["T-Rex"]=()=>{
     setInterval(onFrame, 50);
   }
   function gameStop() {
-    //digitalPulse(VIBL, 1, 1000);
-    //digitalPulse(VIBR, 1, 1000);
     rex.alive = false;
     rex.img = 2; // dead
     clearInterval();
@@ -699,7 +833,6 @@ Badge.apps["T-Rex"]=()=>{
       if (BTN4.read() && rex.x > 0) rex.x--;
       if (BTN3.read() && rex.x < 20) rex.x++;
       if (BTN2.read() && rex.y == 0) {
-        //digitalPulse(VIBL, 1, 20);
         rex.vy = 4;
       }
       rex.y += rex.vy;
