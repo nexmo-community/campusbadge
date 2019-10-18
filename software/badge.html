@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Conor O'Neill">
+    <meta name="description" content="Flash settings on to your Campus badge">
+    <title>Campus Badge Settings</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+</head>
+
+<body>
+    <main class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="column">
+                    <h1 class="title">Campus Badge Settings</h1>
+
+                    <ol>
+                        <li>Make your badge Discoverable in its main menu</li>
+                        <li>Note the last 4 hex digits of its Bluetooth address</li>
+                        <li>Enter a new name below and click "Send to Badge"</li>
+                        <li>In the popup that appears, click on your device based on the Bluetooth address above</li>
+                        <li>Restart your badge</li>
+                    </ol>
+                    <p>NOTE: There is no visual indication on this page that your  submission was successful. To
+                        confirm
+                        success, restart the badge and check if the new name has appeared.</p>
+
+                    <form id="nameform">
+                        <fieldset>
+                            <label for="firstname">First Name:</label>
+                            <input type="text" id="firstname" placeholder="Bob" name="firstname" />
+                            <label for="secondname">Second Name:</label>
+                            <input type="text" id="secondname" placeholder="Loblaw" name="secondname" />
+                            <input type="button" value="Set Name" onclick="newName()">
+                        </fieldset>
+                    </form>
+
+                    <form id="nameform">
+                        <fieldset>
+                            <label for="ssid">WiFi SSID</label>
+                            <input type="text" id="ssid" placeholder="My Network" name="ssid" />
+                            <label for="password">WiFI Password</label>
+                            <input type="text" id="password" placeholder="password" name="password" />
+                            <input type="button" value="Set WiFi" onclick="setWifi()">
+                        </fieldset>
+                    </form>
+
+
+              
+                    <script>
+                        function newName() {
+                            var first = document.getElementById('firstname').value;
+                            var second = document.getElementById('secondname').value;
+
+                            var command =
+                                "require(\"Storage\").write(\".boot1\", `Badge=global.Badge||{}; Badge.NAME=[\"" +
+                                first +
+                                "\",\"" +
+                                second + "\"];`);" + "\n";
+
+                            Puck.write(command);
+                        }
+                        function setWifi() {
+                            var ssid = document.getElementById('ssid').value;
+                            var password = document.getElementById('password').value;
+
+                            var command =
+                                "require(\"Storage\").write(\".boot2\", `Badge=global.Badge||{}; Badge.WIFI_SSID=\""+ssid+"\"; Badge.WIFI_PW=\""+password+"\"`);\n"
+                            Puck.write(command);
+                        }
+                    </script>
+                </div>
+                        
+            </div>
+        </div>
+    </main>
+    <script src="https://www.puck-js.com/puck.js"></script>
+
+</body>
+
+</html>
