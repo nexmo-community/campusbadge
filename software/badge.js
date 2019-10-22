@@ -613,7 +613,7 @@ Badge.apps["Temperature"] = () => {
 
 Badge.apps["NodeRED Workshop"]= () => {
   Badge.reset();
-  var server = "test.mosquitto.org"; 
+  var server = "demo.nexmodev.com"; 
   var mqtt = require("tinyMQTT").create(server);
   var name = Badge.getName();
   mqtt.on('connected', function() {
