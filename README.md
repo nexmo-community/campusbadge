@@ -4,6 +4,8 @@ Welcome to [Vonage Campus](https://www.vonage.com/campus/)! This repo is dedicat
 
 We love all things [#badgelife](https://hackaday.com/tag/badgelife/) and we thought our attendees might enjoy this too :)
 
+Badge owners: check the [wiki](https://github.com/nexmo-community/campusbadge/wiki) for all the information.
+
 <img src="images/pixl.jpg" />
 
 ## About and Acknowledgements
