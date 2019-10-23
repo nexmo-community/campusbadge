@@ -238,14 +238,34 @@ Badge.apps["Lights"] = () => {
       l[i] = val;
     }
     lightpattern(l);
-  };
+  }
+  
+ function pulse(){
+    l = new Int8Array(15);
+    var i = 0;
+    var mode = "asc";
+    setInterval(function(){
+      if (i == -1 ) {mode = "asc";
+                   i++;
+                  }
+      if (i => 0 && i < 14){
+        l[7] = i*10;
+        if (mode == "asc"){ i++;} else {i--;}
+      } 
+      if (i == 14){mode = "desc";
+                   i--;
+                  }
+      lightpattern(l);
+    }, 75);
+}
 
   var menu = {
     "": { title: "-- Select Pattern --" },
     "Back to Badge": Badge.badge,
     "Rainbow": function () {clearTimeout(); lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
     "Ambient/Random": function() { amb(); setInterval(amb, 1000);},
-    "Floodlights (health warning)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
+    "Pulse":  function () {clearTimeout(); pulse();},
+    "Floodlights (!WARNING! BRIGHT)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
     "Off" : function () { clearTimeout(); lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
   };
   Pixl.menu(menu);
