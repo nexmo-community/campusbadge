@@ -58,12 +58,10 @@ We've put together some ready-made bits and bobs for you to enjoy in between let
 
 All the code on your badge is here in this repository. If you want to tinker with your new gadget, or if you need to put the original code back onto the badge (these two things may be related) then you can do that here:
 
-<https://www.espruino.com/ide/?codeurl=https://raw.githubusercontent.com/nexmo-community/campusbadge/master/software/badge.js> (devices bigger than a phone are recommended for this part)
 
-Go to the picture of a cog in the top right access your settings:
+<https://www.espruino.com/ide/?settings={%22MODULE_AS_FUNCTION%22:true,%22SA%C2%ADVE_ON_SEND%22:1}&codeurl=https://raw.githubusercontent.com/nexmo-community/campusbadge/master/software/badge.js#> (devices bigger than a phone are recommended for this part)
 
-1. In "Communications", set "Save on Send" to `Direct to Flash (execute code at boot)`
-2. Also in "Communications",  the option for "Module Extensions" should be checked
+IMPORTANT! You will need to use Chrome to connect to the badge as it is the only browser supporting Web Bluetooth.
 
 On the badge, choose "Make Connectable" from the menu, and it will tell you its name at the bottom of the screen.
 
