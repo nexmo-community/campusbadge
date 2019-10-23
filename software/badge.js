@@ -606,6 +606,7 @@ Badge.apps["DTMF Dialer"]= () => {
 };
 
 Badge.apps["Temperature"] = () => {
+  Badge.reset();
   function onTimer() {
     // Get the temperature as a string
     var t = E.getTemperature().toFixed(1);
