@@ -227,6 +227,17 @@ Badge.apps["Lights"] = () => {
     np.write(D13, pattern);
   };
 
+  function drawName() {
+    g.clear();
+    // Draw the Name
+    var y = 20; // y offset
+    var l = Badge.NAME;
+    l.forEach((s, i) =>
+      Badge.drawStringDbl(s, 57, y + (i - (l.length - 1) / 2) * 20, 14, 0)
+    );
+    g.flip();
+  }
+  
   function amb() {
     l = new Int8Array(15);
     for( i = 0; i < 15; i++) {
@@ -262,6 +273,7 @@ Badge.apps["Lights"] = () => {
   var menu = {
     "": { title: "-- Select Pattern --" },
     "Back to Badge": Badge.badge,
+    "Show Name" : drawName,
     "Rainbow": function () {clearTimeout(); lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
     "Ambient/Random": function() { amb(); setInterval(amb, 1000);},
     "Pulse":  function () {clearTimeout(); pulse();},
