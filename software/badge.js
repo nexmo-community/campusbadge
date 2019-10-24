@@ -160,19 +160,9 @@ MAC: ${NRF.getAddress()}`);
 Badge.badge = () => {
   Badge.reset();
   var timeout;
-  var lastTime = Date.now();
   var imgy = 0;
-
-  function getTimeChar(ch) {
-    var min = ch.charCodeAt() * 10;
-    return ((min / 60) | 0) + ":" + ("0" + (min % 60)).substr(-2);
-  }
-
+  
   function draw(n) {
-    var t = Date.now();
-    var timeDiff = t - lastTime;
-    lastTime = t;
-
     g.clear();
     // Draw the Name
     var y = 20; // y offset
@@ -180,22 +170,7 @@ Badge.badge = () => {
     l.forEach((s, i) =>
       Badge.drawStringDbl(s, 57, y + (i - (l.length - 1) / 2) * 20, 14, 0)
     );
-
-    // Draw the current time
-    //g.setFontAlign(-1, -1);
-    //var date = new Date();
-    //var timeStr = date
-    //  .toISOString()
-    //  .split("T")[1]
-    //  .substr(0, 5);
-    //g.drawString(timeStr, 0, 59);
     g.flip();
-    //var delay = 1000;
-    //if (timeout) clearTimeout(timeout);
-    //timeout = setTimeout(e => {
-    //  timeout = undefined;
-    //  draw(1);
-    //}, delay);
   }
   draw(0);
   setWatch(Badge.menu, BTN1);
