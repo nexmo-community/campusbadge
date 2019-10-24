@@ -1,8 +1,8 @@
 Badge = global.Badge || {};
 Badge.URL = Badge.URL || "http://www.espruino.com";
 Badge.NAME = Badge.NAME || ["Your", "Name Here"]; // ISO10646-1 codepage
-Badge.WIFI_SSID = Badge.WIFI_SSID || "SSID";
-Badge.WIFI_PW = Badge.WIFI_PW || "Password";
+Badge.WIFI_SSID = Badge.WIFI_SSID || "BadgeIOT";
+Badge.WIFI_PW = Badge.WIFI_PW || "badgelife";
 Badge.backlight = false;
 // User-defined apps
 Badge.apps = Badge.apps || {};
@@ -33,6 +33,7 @@ var BTNS = [BTN1, BTN2, BTN3, BTN4];
 // --------------------------------------------
 // Get Badge back to normal-ish
 Badge.reset = () => {
+  digitalWrite(D11,0); // disable ESP8266
   Pixl.menu();
   clearInterval();
   clearWatch();
