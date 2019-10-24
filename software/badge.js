@@ -160,18 +160,9 @@ MAC: ${NRF.getAddress()}`);
 Badge.badge = () => {
   Badge.reset();
   var timeout;
-  var lastTime = Date.now();
   var imgy = 0;
 
-  function getTimeChar(ch) {
-    var min = ch.charCodeAt() * 10;
-    return ((min / 60) | 0) + ":" + ("0" + (min % 60)).substr(-2);
-  }
-
   function draw(n) {
-    var t = Date.now();
-    var timeDiff = t - lastTime;
-    lastTime = t;
 
     g.clear();
     // Draw the Name
@@ -181,21 +172,8 @@ Badge.badge = () => {
       Badge.drawStringDbl(s, 57, y + (i - (l.length - 1) / 2) * 20, 14, 0)
     );
 
-    // Draw the current time
-    //g.setFontAlign(-1, -1);
-    //var date = new Date();
-    //var timeStr = date
-    //  .toISOString()
-    //  .split("T")[1]
-    //  .substr(0, 5);
-    //g.drawString(timeStr, 0, 59);
     g.flip();
-    //var delay = 1000;
-    //if (timeout) clearTimeout(timeout);
-    //timeout = setTimeout(e => {
-    //  timeout = undefined;
-    //  draw(1);
-    //}, delay);
+
   }
   draw(0);
   setWatch(Badge.menu, BTN1);
@@ -273,12 +251,12 @@ Badge.apps["Lights"] = () => {
   var menu = {
     "": { title: "-- Select Pattern --" },
     "Back to Badge": Badge.badge,
-    "Show Name" : drawName,
     "Rainbow": function () {clearTimeout(); lightpattern([0,67,97,0,10,127,127,10,0,55,127,0,0,120,0]);},
     "Ambient/Random": function() { amb(); setInterval(amb, 1000);},
     "Pulse":  function () {clearTimeout(); pulse();},
     "Floodlights (!WARNING! BRIGHT)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
     "Off" : function () { clearTimeout(); lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
+    "Show Name with Lights" : drawName
   };
   Pixl.menu(menu);
 };
