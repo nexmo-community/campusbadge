@@ -298,6 +298,22 @@ Badge.apps["Sound"]= () => {
     'G':783.99
   };
 
+  var ringtone_notes = [
+    ["G", 200],
+    ["F", 200],
+    ["A", 400],
+    ["B", 400],
+    ["E", 200],
+    ["D", 200],
+    ["f", 400],
+    ["g", 400],
+    ["D", 200],
+    ["C", 200],
+    ["e", 400],
+    ["g", 450],
+    ["C", 520],
+  ];
+
   var fanfare_notes = [
     ["d", 200],
     ["d", 200],
@@ -376,6 +392,13 @@ Badge.apps["Sound"]= () => {
     }
   }
 
+  function ringtone() {
+    if (!soundInProgress) {
+      soundInProgress = true;
+      playNextNoteWithDuration(ringtone_notes, 0);
+    }
+  }
+
   function beethoven() {
     if (!soundInProgress) {
       soundInProgress = true;
@@ -410,6 +433,7 @@ Badge.apps["Sound"]= () => {
     "Beep" : beep,
     "Fanfare" : fanfare,
     "Beethoven" : beethoven,
+    "Ringtone" : ringtone,
     "Stop" : silence,
   };
   Pixl.menu(menu);
