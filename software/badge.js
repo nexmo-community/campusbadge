@@ -298,7 +298,7 @@ Badge.apps["Sound"]= () => {
     'G':783.99
   };
 
-  var nokia_notes = [
+  var ringtone_notes = [
     ["G", 200],
     ["F", 200],
     ["A", 400],
@@ -392,10 +392,10 @@ Badge.apps["Sound"]= () => {
     }
   }
 
-  function nokia() {
+  function ringtone() {
     if (!soundInProgress) {
       soundInProgress = true;
-      playNextNoteWithDuration(nokia_notes, 0);
+      playNextNoteWithDuration(ringtone_notes, 0);
     }
   }
 
@@ -433,7 +433,7 @@ Badge.apps["Sound"]= () => {
     "Beep" : beep,
     "Fanfare" : fanfare,
     "Beethoven" : beethoven,
-    "Nokia" : nokia,
+    "Ringtone" : ringtone,
     "Stop" : silence,
   };
   Pixl.menu(menu);
