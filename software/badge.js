@@ -163,6 +163,7 @@ Badge.badge = () => {
   var imgy = 0;
   
   function draw(n) {
+
     g.clear();
     // Draw the Name
     var y = 20; // y offset
@@ -170,7 +171,9 @@ Badge.badge = () => {
     l.forEach((s, i) =>
       Badge.drawStringDbl(s, 57, y + (i - (l.length - 1) / 2) * 20, 14, 0)
     );
+
     g.flip();
+
   }
   draw(0);
   setWatch(Badge.menu, BTN1);
@@ -202,6 +205,17 @@ Badge.apps["Lights"] = () => {
     np.write(D13, pattern);
   };
 
+  function drawName() {
+    g.clear();
+    // Draw the Name
+    var y = 20; // y offset
+    var l = Badge.NAME;
+    l.forEach((s, i) =>
+      Badge.drawStringDbl(s, 57, y + (i - (l.length - 1) / 2) * 20, 14, 0)
+    );
+    g.flip();
+  }
+  
   function amb() {
     l = new Int8Array(15);
     for( i = 0; i < 15; i++) {
@@ -242,6 +256,7 @@ Badge.apps["Lights"] = () => {
     "Pulse":  function () {clearTimeout(); pulse();},
     "Floodlights (!WARNING! BRIGHT)" : function () { clearTimeout(); lightpattern([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);},
     "Off" : function () { clearTimeout(); lightpattern([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);},
+    "Show Name with Lights" : drawName
   };
   Pixl.menu(menu);
 };
