@@ -161,7 +161,7 @@ Badge.badge = () => {
   Badge.reset();
   var timeout;
   var imgy = 0;
-
+  
   function draw(n) {
 
     g.clear();
