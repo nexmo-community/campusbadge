@@ -623,8 +623,8 @@ Badge.apps["DTMF Dialer"]= () => {
 Badge.apps["Temperature"] = () => {
   Badge.reset();
   function onTimer() {
-    // Get the temperature as a string
-    var t = E.getTemperature().toFixed(1);
+    var c = E.getTemperature().toFixed(1);
+	  var f = Math.round(c * 9 / 5 + 32); //farenheit 
     // Clear display
     g.clear();
     // Use the small font for a title
@@ -632,7 +632,7 @@ Badge.apps["Temperature"] = () => {
     g.drawString("Temperature:");
     // Use a large font for the value itself
     g.setFontVector(40);
-    g.drawString(t, (g.getWidth()-g.stringWidth(t))/2,10);
+    g.drawString(f, (g.getWidth()-g.stringWidth(f))/2,10);
     // Update the screen
     g.flip();
   }
