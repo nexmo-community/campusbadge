@@ -1,8 +1,8 @@
 Badge = global.Badge || {};
 Badge.URL = Badge.URL || "http://www.espruino.com";
 Badge.NAME = Badge.NAME || ["Your", "Name Here"]; // ISO10646-1 codepage
-Badge.WIFI_SSID = Badge.WIFI_SSID || "BadgeIOT";
-Badge.WIFI_PW = Badge.WIFI_PW || "badgelife";
+Badge.WIFI_SSID = Badge.WIFI_SSID || "Vonage";
+Badge.WIFI_PW = Badge.WIFI_PW || "Events19";
 Badge.backlight = false;
 // User-defined apps
 Badge.apps = Badge.apps || {};
