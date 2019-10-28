@@ -1,5 +1,5 @@
 Badge = global.Badge || {};
-Badge.URL = Badge.URL || "http://www.espruino.com";
+Badge.URL = Badge.URL || "https://static.nexmodev.com/badge.html";
 Badge.NAME = Badge.NAME || ["Your", "Name Here"]; // ISO10646-1 codepage
 Badge.WIFI_SSID = Badge.WIFI_SSID || "Vonage";
 Badge.WIFI_PW = Badge.WIFI_PW || "Events19";
